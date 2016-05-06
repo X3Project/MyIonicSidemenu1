@@ -1,0 +1,17 @@
+<ion-view view-title="Todos on List">
+  <ion-content>
+<!--   <ion-nav-buttons side="left"> -->
+<!--       <a href="/#/app/todolists" menu-toggle="left" class="button button-icon icon ion-navicon"></a> -->
+<!--   </ion-nav-buttons> -->
+    <ion-list>
+      <ion-item ng-repeat="todo in todosonlist" href="#/x3/tasks/{{todo.toDoID}}">
+        {{todo.title}}
+		<!-- #######         view the todo (set selected) -->
+		<a id="button-3" class="button icon-right ion-eye button-energized"  ng-click="setSelected($index);$event.preventDefault()">view</a>
+		<!-- #######		remove the list button		 -->
+		<button id="button-1" class="button icon-right ion-trash-a" ng-click="removeList(todo)" style="float: right;"></button>
+        
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

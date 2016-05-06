@@ -1,0 +1,44 @@
+<!-- The template uses ng-model to bind various todo details to different properties of scope model todo. -->
+
+<div class="form-group">
+  <label for="title" class="col-sm-2 control-label">Bezeichnung</label>
+  <div class="col-sm-10">
+    <input type="text" ng-model="todo.title" class="form-control" id="title" placeholder="{{todo.title}}"/>
+  </div>
+</div>
+<div class="form-group">
+  <label for="details" class="col-sm-2 control-label">Beschreibung</label>
+  <div class="col-sm-10">
+    <input type="text" ng-model="todo.details" class="form-control" id="details" placeholder="Detail-Beschreibung"/>
+  </div>
+</div>
+<div class="form-group">
+  <label for="dueDate" class="col-sm-2 control-label">zu erledigen bis</label>
+  <div class="col-sm-10">
+    <input type="text" ng-model="todo.dueDate" class="form-control" id="dueDate" placeholder="bis zu welchem Datum?"/>
+  </div>
+</div>
+<div class="form-group">
+  <label for="plannedEffort" class="col-sm-2 control-label">Geplanter Aufwand</label>
+  <div class="col-sm-10">
+    <input type="text" ng-model="todo.plannedEffort" class="form-control" id="plannedEffort" placeholder="Aufwand in [h]"/>
+  </div>
+</div>
+<div class="form-group">
+  <label for="reminderDate" class="col-sm-2 control-label">Erinnerung am</label>
+  <div class="col-sm-10">
+    <input type="text" ng-model="todo.reminderDate" class="form-control" id="reminderDate" placeholder="Erinnerung"/>
+  </div>
+</div>
+<div class="form-group">
+  <label for="reminderDate" class="col-sm-2 control-label">CustomerId am</label>
+  <div class="col-sm-10">
+    <input type="text" ng-model="todo.CustomerID" class="form-control" id="customerId" placeholder="CustomerID"/>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="col-sm-offset-2 col-sm-10">
+    <input type="submit" class="btn btn-primary" value="Save"/>
+  </div>
+</div>

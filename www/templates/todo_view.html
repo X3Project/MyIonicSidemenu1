@@ -1,0 +1,58 @@
+<ion-nav-view>
+<ion-nav-title>Details für {{todo.title}}</ion-nav-title>
+</ion-nav-view>
+<ion-view>
+<ion-content>
+<table class="table movietable">
+  <tr>
+    <td><h3>Details für {{todo.title}}</h3></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Todo Bezeichnung</td>
+    <td>{{todo.title}}</td>
+  </tr>
+  <tr>
+    <td>Beschreibung</td>
+    <td>{{todo.details}}</td>
+  </tr>
+  <tr>
+    <td>zu erledigen bis</td>
+    <td>{{todo.dueDate}}</td>
+  </tr>
+  <tr>
+    <td>geplanter Aufwand</td>
+    <td>{{todo.plannedEffort}}</td>
+  </tr>
+  <tr>
+    <td>Erinnerung am</td>
+    <td>{{todo.reminderDate}}</td>
+  </tr>
+  <tr>
+    <td>erstellt am</td>
+    <td>{{todo.creationDate}}</td>
+  </tr>
+  <tr>
+    <td>zuletzt geändert am</td>
+    <td>{{todo.lastChange}}</td>
+  </tr>
+</table>
+<div>
+  <a class="btn btn-primary" ui-sref="x3.todoEdit({id:todo.toDoID})">Edit</a>
+</div>
+
+</ion-content>
+</ion-view>
+
+
+<!-- <div class="form-group"> -->
+<!--   <label for="plot" class="col-sm-2 control-label">Details for List {{tlist.title}}</label> -->
+<!--   <div class="col-sm-10"> -->
+<!--     <input type="text" ng-model="editedList.name" class="form-control" id="listname" placeholder="Name der Liste"/> -->
+<!--   </div> -->
+<!-- </div> -->
+<!-- <div class="form-group"> -->
+<!--   <div class="col-sm-offset-2 col-sm-10"> -->
+<!--     <input type="submit" class="btn btn-primary" value="Save"/> -->
+<!--   </div> -->
+<!-- </div> -->
