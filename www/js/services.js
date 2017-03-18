@@ -1,6 +1,16 @@
 angular.module('starter.services', ['ngResource'])
+.factory('AllLists', AllListsFactory)
+.factory('TodoListService', TodoListService)
+.factory('TodosPerList', TodosPerList)
+.factory('TodoService', TodoService)
+.factory('TasksPerTodo', TasksPerTodo)
+.factory('TaskService', TaskService)
+.factory('CustomerService', CustomerService)
+.factory('Shared', Shared)
+;
 
-.factory('AllLists', ['$resource', function($resource) {
+AllListsFactory.$inject = ['$resource'];
+function AllListsFactory($resource) {
 	var dbURL = "http://localhost:8185/tbllists/:id";
 	var shared = {
 		refresh: true,
@@ -9,12 +19,12 @@ angular.module('starter.services', ['ngResource'])
 	return $resource (dbURL,{}, {
 		get: {method: 'GET', cache: false, isArray: false},
 		update: { method:'POST' }
-	});
-}])
+	});			
+}
 
-.factory('TodoListService', ['$resource', 'AllLists', function($resource,AllLists) {
-//	Error: Strict mode forbids implicit creation of global property 'todolists'
-//	'use strict';
+TodoListService.$inject = ['$resource','AllLists'];
+function TodoListService($resource,AllLists) {
+	
 	var dbURL = "http://localhost:8185/tbllists/:id";
 	var todolists = {};
 	var api = function() {
@@ -67,29 +77,28 @@ angular.module('starter.services', ['ngResource'])
 					);
 			}
 			
-	}; //todoLIST
-//	return todoLIST;
-}])
+	}; //todoLIST	
+}
 
-.factory('Shared', function() {
-
+function Shared() {
 	var Shared = {
-		refresh: true,
-		editListId: 0
-	};
-	return Shared;
-})
+			refresh: true,
+			editListId: 0
+		};
+		return Shared;		
+}
 
 
-.factory('TodosPerList', ['$resource',  function($resource) {
+TodoListService.$inject = ['$resource'];
+function TodosPerList($resource) {
 	var dbURL = "http://localhost:8185/tbltodoes/search/findByTbllist_listid?listid=:listId";
 	return $resource (dbURL,{listId:'@id'}, {
 		get: {method: 'GET', cache: false, isArray: false}
-	});
-}])
+	});	
+}
 
-
-.factory('TodoService', ['$resource', function($resource) {
+TodoService.$inject = ['$resource'];
+function TodoService($resource) {
 	var dbURL = "http://localhost:8185/tbltodoes/:id";
 	var todos = {};
 	return {
@@ -97,11 +106,36 @@ angular.module('starter.services', ['ngResource'])
 			get: {method: 'GET', cache: false, isArray: false},
 			update: { method:'POST' }
 		})
-	}
-}])
+	}		
+}
 
-// bisherige Lösung mit standard API
-.factory('TasksPerTodo', ['$resource',  function($resource) {
+
+TaskService.$inject = ['$resource'];
+function TaskService($resource) {
+	var dbURL = "http://localhost:8185/tbltasks/:id";
+	var tasks = {};
+	return {
+		api: $resource (dbURL,{}, {
+			get: {method: 'GET', cache: false, isArray: false},
+			update: { method:'POST' }
+		})
+	}		
+}
+
+CustomerService.$inject = ['$resource'];
+function CustomerService($resource) {
+	var dbURL = "http://localhost:8185/tblcustomers/:id";
+	return {
+		api: $resource (dbURL,{}, {
+			get: {method: 'GET', cache: false, isArray: false},
+			update: { method:'POST' }
+		})
+	}		
+}
+
+//bisherige Lösung mit standard API
+TasksPerTodo.$inject = ['$resource'];
+function TasksPerTodo($resource) {
 //	var dbURL = "http://localhost:8185/tbltasks/search/findByTbltodo_todoID?todoID=:todoId";
 //	var dbURL = "http://localhost:8185/tbltasks/search/findByTodoID?todoid=:todoid";
 
@@ -110,6 +144,6 @@ angular.module('starter.services', ['ngResource'])
 		get: {method: 'GET', cache: false, isArray: false},
 		update: {method: 'PUT', cache: false, isArray: false}
 	});	
-}])
-
+	
+}
 
