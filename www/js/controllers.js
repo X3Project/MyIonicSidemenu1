@@ -1,6 +1,18 @@
 var ctrls = angular.module('starter.controllers', ['starter.services']);
 
-ctrls.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+ctrls.controller('AppCtrl', AppCtrl);
+ctrls.controller('TodolistCtrl', TodolistCtrl);
+ctrls.controller('TodolistCreateCtrl', TodolistCreateCtrl);
+ctrls.controller('TodosCtrl', TodosCtrl);
+ctrls.controller('TodoViewCtrl', TodoViewCtrl);
+ctrls.controller('TodoEditCtrl', TodoEditCtrl);
+ctrls.controller('TaskCtrl', TaskCtrl);
+ctrls.controller('TaskViewCtrl', TaskViewCtrl);
+
+AppCtrl.$inject = ['$scope', '$ionicModal', '$timeout'];
+
+function AppCtrl($scope, $ionicModal, $timeout) {
+//ctrls.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
   
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -39,12 +51,15 @@ ctrls.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
     $timeout(function() {
       $scope.closeLogin();
     }, 1000);
-  };
-})
+  }
+};
 
 
+TodolistCtrl.$inject = ['$scope', '$state', 'AllLists', 'TodoListService', 'Shared'];
+
+function TodolistCtrl ($scope, $state, AllLists, TodoListService, Shared) {
 //ctrls.controller('TodolistCtrl', ['$scope', 'TodoListService', 'Shared', function($scope, $state, AllLists, TodoListService, Shared, todoLIST) {
-ctrls.controller('TodolistCtrl', function($scope, $state, AllLists, TodoListService, Shared) {
+//ctrls.controller('TodolistCtrl', function($scope, $state, AllLists, TodoListService, Shared) {
 	
 	console.log("TodolistCtrl - ctrl reached get:" + JSON.stringify(TodoListService.todolists));
 	$scope.newList = {};
@@ -187,10 +202,13 @@ ctrls.controller('TodolistCtrl', function($scope, $state, AllLists, TodoListServ
 		
 //	} 
     
-});
+};
 
 
-ctrls.controller('TodolistCreateCtrl', function($scope, $state, AllLists, Shared) {
+TodolistCreateCtrl.$inject = ['$scope', '$state', 'AllLists', 'Shared'];
+
+function TodolistCreateCtrl($scope, $state, AllLists, Shared) {
+//ctrls.controller('TodolistCreateCtrl', function($scope, $state, AllLists, Shared) {
 	console.log("TodolistCreateCtrl - ctrl reached"); 
 	
 	$scope.newList = {};
@@ -227,14 +245,18 @@ ctrls.controller('TodolistCreateCtrl', function($scope, $state, AllLists, Shared
 		    };
 	};
 	
-});
+};
 
 //NICHT in Verwendung - Konzept für Todos & Co
 //ctrls.controller('TodolistViewCtrl', function($scope, $stateParams, TodoListService) {
 //	  $scope.movie = TodoListService.get({ id: $stateParams.id }); //Get a single todolist. Issues a GET to /api/movies/:id
 //	});
 
-ctrls.controller('TodosCtrl', function($scope, $stateParams, TodosPerList) {
+
+TodosCtrl.$inject = ['$scope', '$stateParams', 'TodosPerList'];
+
+function TodosCtrl ($scope, $stateParams, TodosPerList) {
+//ctrls.controller('TodosCtrl', function($scope, $stateParams, TodosPerList) {
 	var list_id = $stateParams.listid;
 	console.log("TodosCtrl - ctrl reached list_id:"+list_id);
 	
@@ -267,29 +289,66 @@ ctrls.controller('TodosCtrl', function($scope, $stateParams, TodosPerList) {
 		deleteTodo(todo);
 		console.log("removeList for:" + todo.title);
 		};
-});
+		
+};
 
-ctrls.controller('TodoViewCtrl', function($scope, $stateParams, TodoService) {
+TodoViewCtrl.$inject = ['$scope', '$stateParams', 'TodoService', 'CustomerService'];
+
+function TodoViewCtrl($scope, $stateParams, TodoService, CustomerService) {
+//ctrls.controller('TodoViewCtrl', function($scope, $stateParams, TodoService, CustomerService) {
 	console.log("TodoViewCtrl - ctrl reached for id:"+ $stateParams.id);  
-	$scope.todo = TodoService.api.get({ id: $stateParams.id }); //Get a single todo.Issues a GET to
-});
+	//Get a single todo.Issues a GET to
+	$scope.todo = TodoService.api.get({ id: $stateParams.id }, 
+		function success(response) {
+			console.log("TodoViewCtrl success::"+ JSON.stringify($scope.todo));
+			$scope.crash = CustomerService.api.get({id:$scope.todo.customerID}, 
+				function success(response) {
+					if (response._embedded != undefined) {
+						$scope.customer1 = response._embedded.tblcustomers;
+						console.log("TodoViewCtrl customer get success::"+ JSON.stringify($scope.customer1));
+					}
+							
+				},
+			    function error(errorResponse) {
+					console.log("TodoViewCtrl customer Error:" + JSON.stringify(errorResponse));
+			    }
+			);
+//			console.log("customer:" + JSON.stringify($scope.todo.customer));
+		},
+	    function error(errorResponse) {
+			console.log("TodoViewCtrl Error:" + JSON.stringify(errorResponse));
+	    }
+	);	
+};
 
-ctrls.controller('TodoEditCtrl', function($scope, $state, $stateParams, TodoService) {
+
+TodoEditCtrl.$inject = ['$scope', '$state', '$stateParams', 'TodoService'];
+
+function TodoEditCtrl($scope, $state, $stateParams, TodoService) {
+//ctrls.controller('TodoEditCtrl', function($scope, $state, $stateParams, TodoService) {
+	console.log("TodoEditCtrl - ctrl reached for id:"+ $stateParams.id);
 	$scope.todo = TodoService.api.get({ id: $stateParams.id }); 
 	
 	
 	$scope.updateTodo = function() { //Update the edited todo. Issues a PUT to /x3/todos/:id
-		console.log("updateTodo for:" + $scope.todo.title + "ID:"+$scope.todo.toDoID + "Cust:" + $scope.todo.CustomerID+"#");
-		
-			$scope.todo.CustomerID = 1; //temporär
-			console.log("updateTodo for:" + $scope.todo.title + "ID:"+$scope.todo.toDoID + "Cust:" + $scope.todo.CustomerID+"#");
+		console.log("updateTodo for:" + $scope.todo.title + " ID:"+$scope.todo.toDoID);
+			var custNew = {CustomerID: 1, 
+							customer: "David&Cotz", 
+							lastChange: "2016-05-13T18:18:29.000+0000"};
+			 
+			//$scope.todo.Customer = custNew; //temp
+			//console.log("Cust:" + $scope.todo.Customer.customer+"#"+$scope.todo.Customer.CustomerID);
 		    $scope.todo.$update(function() {
 		      $state.go('x3.todos'); // on success go back to home i.e. todos state.
 		    });
 	  };
-});
+};
 
-ctrls.controller('TaskCtrl', function($scope, $stateParams, TasksPerTodo) {
+
+TaskCtrl.$inject = ['$scope', '$stateParams', 'TasksPerTodo'];
+
+function TaskCtrl($scope, $stateParams, TasksPerTodo) {
+//ctrls.controller('TaskCtrl', function($scope, $stateParams, TasksPerTodo) {
 	var todo_id = $stateParams.todoid;
 	console.log("TaskCtrl - ctrl reached todo_id:"+todo_id + JSON.stringify($stateParams));
 	TasksPerTodo.get({todoid: todo_id}, 
@@ -302,19 +361,36 @@ ctrls.controller('TaskCtrl', function($scope, $stateParams, TasksPerTodo) {
 		    }
 	);
 	$scope.openMenu = function () {};		
-});
+};
 
-ctrls.controller('TaskSelectCtrl', function($scope, $stateParams, TaskSelected) {
-	var todo_id = $stateParams.todoid;
-	console.log("TaskCtrl - ctrl reached todo_id:"+todo_id + JSON.stringify($stateParams));
-	TasksPerTodo.get({todoid: todo_id}, 
-			function success(response) {
-				$scope.tasks = response._embedded.tbltasks;
-				console.log("TaskCtrl success::"+ JSON.stringify($scope.tasks));
-			},
-		    function error(errorResponse) {
-				console.log("TaskCtrl Error:" + JSON.stringify(errorResponse));
-		    }
+//ctrls.controller('TaskSelectCtrl', function($scope, $stateParams, TaskSelected) {
+//	var todo_id = $stateParams.todoid;
+//	console.log("TaskCtrl - ctrl reached todo_id:"+todo_id + JSON.stringify($stateParams));
+//	TasksPerTodo.get({todoid: todo_id}, 
+//			function success(response) {
+//				$scope.tasks = response._embedded.tbltasks;
+//				console.log("TaskCtrl success::"+ JSON.stringify($scope.tasks));
+//			},
+//		    function error(errorResponse) {
+//				console.log("TaskCtrl Error:" + JSON.stringify(errorResponse));
+//		    }
+//	);
+//	$scope.openMenu = function () {};		
+//});
+
+
+TaskViewCtrl.$inject = ['$scope', '$stateParams', 'TaskService'];
+
+function TaskViewCtrl($scope, $stateParams, TaskService) {
+//ctrls.controller('TaskViewCtrl', function($scope, $stateParams, TaskService) {
+	console.log("TaskViewCtrl - ctrl reached for id:"+ $stateParams.id);  
+	//Get a single task
+	$scope.task = TaskService.api.get({ id: $stateParams.id }, 
+		function success(response) {
+			console.log("TaskViewCtrl success::"+ JSON.stringify($scope.task));
+		},
+	    function error(errorResponse) {
+			console.log("TaskViewCtrl Error:" + JSON.stringify(errorResponse));
+	    }
 	);
-	$scope.openMenu = function () {};		
-});
+};
